@@ -4,7 +4,8 @@ const program = require('commander');
 const osascript = require('node-osascript');
 const spotify = require('spotify-web-api-node');
 const _ = require('lodash');
-const searchResultParser = require('./parsers/');
+const parseSearchResults = require('./parsers/');
+const printSearchResults = require('./printers/');
 
 const spotifyApi = new spotify();
 
@@ -60,7 +61,8 @@ program
 
 		searchFn(searchQry)
 			.then(function(data) {
-				console.log(searchResultParser(resultType, data));
+				var results = parseSearchResults(resultType, data);
+				printSearchResults(resultType, results);
 			}, function(err) {
 				console.error(err);
 			});
