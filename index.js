@@ -7,6 +7,7 @@ const _ = require('lodash');
 const prompt = require('prompt');
 const parseSearchResults = require('./parsers/');
 const printSearchResults = require('./printers/');
+const spotifyClient = require('./osascripts/');
 
 const spotifyApi = new spotify();
 
@@ -67,14 +68,95 @@ program
 				prompt.start();
 				prompt.get(['selection'], function (err, result) {
 					var selectedSpotifyURI = results[result.selection-1].spotifyURI;
-					osascript.execute('tell application "Spotify" to play track uri', { uri : selectedSpotifyURI },function(err, result, raw){
-						  if (err) return console.error(err)
-						  console.log(result, raw)
-					})
-				})
-			}, function(err) {
-				console.error(err);
+					spotifyClient.play(selectedSpotifyURI).then((result) => {
+						console.log(result);
+					});
 			});
+		});
 	});
+
+program
+	.command('status')
+	.action(() => {
+		spotifyClient.status().then((result) => {
+			console.log(result);
+		})
+	})
+
+
+program
+	.command('play')
+	.action(() => {
+		spotifyClient.play().then((result) => {
+			console.log(result);
+		})
+	})
+
+
+program
+	.command('pause')
+	.action(() => {
+		spotifyClient.pause().then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('next')
+	.action(() => {
+		spotifyClient.next().then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('previous')
+	.action(() => {
+		spotifyClient.previous().then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('mute')
+	.action(() => {
+		spotifyClient.mute().then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('unmute')
+	.action(() => {
+		spotifyClient.unmute().then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('volume')
+	.action(() => {
+		spotifyClient.getVolume().then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('+ [deltaVolume]')
+	.action((deltaVolume) => {
+		var changeInVolume = deltaVolume ? deltaVolume : 10;
+		spotifyClient.setVolume(changeInVolume).then((result) => {
+			console.log(result);
+		})
+	})
+
+program
+	.command('- [deltaVolume]')
+	.action((deltaVolume) => {
+		var changeInVolume = deltaVolume ? -deltaVolume : -10;
+		spotifyClient.setVolume(changeInVolume).then((result) => {
+			console.log(result);
+		})
+	})
 
 program.parse(process.argv);
