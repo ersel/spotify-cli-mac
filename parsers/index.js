@@ -12,15 +12,51 @@ const SearchResultParsers = {
 }
 
 function albumParserFn(resultType, data){
-	throw new Error('not implemented');
+	return data.body[resultType].items.map((resultEntry, index) => {
+		var resultIndex = index + 1;
+		var albumName = resultEntry.name;
+		var artistNames = resultEntry.artists.map((artist) => artist.name ).join(", ");
+		var spotifyURI = resultEntry.uri;
+
+		return {
+			resultIndex,
+			albumName,
+			artistNames,
+			spotifyURI
+		}
+	});
 }
 
 function artistParserFn(resultType, data){
-	throw new Error('not implemented');
+	return data.body[resultType].items.map((resultEntry, index) => {
+		var resultIndex = index + 1;
+		var name = resultEntry.name;
+		var followers = resultEntry.followers.total;
+		var spotifyURI = resultEntry.uri;
+
+		return {
+			resultIndex,
+			name,
+			followers,
+			spotifyURI
+		};
+	})
 }
 
 function playlistParserFn(resultType, data){
-	throw new Error('not implemented');
+	return data.body[resultType].items.map((resultEntry, index) => {
+		var resultIndex = index + 1;
+		var name = resultEntry.name;
+		var noOfTracks = resultEntry.tracks.total;
+		var spotifyURI = resultEntry.uri;
+
+		return {
+			resultIndex,
+			name,
+			noOfTracks,
+			spotifyURI
+		};
+	})
 }
 
 function trackParserFn(resultType, data){
