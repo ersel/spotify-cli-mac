@@ -1,0 +1,34 @@
+{
+  "name": "spotify-cli",
+  "version": "0.0.1",
+  "description": "A nodejs app to control Spotify without leaving your terminal on Mac OS X.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ersel/spotify-cli.git"
+  },
+  "keywords": [
+    "spotify",
+    "client",
+    "mac",
+    "os"
+  ],
+  "author": "Ersel Aker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ersel/spotify-cli/issues"
+  },
+  "homepage": "https://github.com/ersel/spotify-cli#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.17.1",
+    "moment-duration-format": "^1.3.0",
+    "node-osascript": "^1.0.4",
+    "spotify-web-api-node": "^2.3.6"
+  }
+}
