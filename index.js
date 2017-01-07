@@ -4,6 +4,7 @@ const program = require('commander');
 const osascript = require('node-osascript');
 const spotify = require('spotify-web-api-node');
 const _ = require('lodash');
+const prompt = require('prompt');
 const parseSearchResults = require('./parsers/');
 const printSearchResults = require('./printers/');
 
@@ -63,6 +64,14 @@ program
 			.then(function(data) {
 				var results = parseSearchResults(resultType, data);
 				printSearchResults(resultType, results);
+				prompt.start();
+				prompt.get(['selection'], function (err, result) {
+					var selectedSpotifyURI = results[result.selection-1].spotifyURI;
+					osascript.execute('tell application "Spotify" to play track uri', { uri : selectedSpotifyURI },function(err, result, raw){
+						  if (err) return console.error(err)
+						  console.log(result, raw)
+					})
+				})
 			}, function(err) {
 				console.error(err);
 			});

@@ -30,13 +30,15 @@ function trackParserFn(resultType, data){
 		var albumName = resultEntry.album.name;
 		var artistNames = resultEntry.artists.map((artist) => artist.name ).join(", ");
 		var duration = moment.duration(resultEntry.duration_ms, 'milliseconds').format();
+		var spotifyURI = resultEntry.uri;
 
 		return {
 			resultIndex,
 			trackName,
 			albumName,
 			artistNames,
-			duration
+			duration,
+			spotifyURI
 		};
 	});
 }
