@@ -1,4 +1,4 @@
-# Spotify Client for Mac OS X
+# :notes: Spotify Client for Mac OS X :notes:
 A nodejs app to control Spotify without leaving your terminal.
 
 # Usage
