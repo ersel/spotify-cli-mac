@@ -24,9 +24,7 @@ function status(){
 		duration: execute('tell application "Spotify" to duration of current track').then((durationMs) => {
 			return moment.duration(durationMs, 'milliseconds').format();
 		}),
-		position: execute('tell application "Spotify" to player position').then((positionSecs) => {
-			return moment.duration(positionSecs, 'seconds').format("h:mm:ss", { forceLength: true  });
-		})
+		position: getPosition()
 	});
 }
 
@@ -51,15 +49,62 @@ function unmute(){
 }
 
 function setVolume(deltaVolume){
-	return execute('tell application "Spotify" to sound volume as integer').then((currentVolume) => {
+	return getVolume().then((currentVolume) => {
 		var newVolume = currentVolume + deltaVolume;
 		if(newVolume > 100) newVolume = 100;
 		if(newVolume < 0) newVolume = 0;
 		return execute('tell application "Spotify" to set sound volume to newVolume', {newVolume});
 	});
 }
+
 function getVolume(){
 	return execute('tell application "Spotify" to sound volume as integer');
+}
+
+function replay(){
+	return execute('tell application "Spotify" to player position').then((positionSecs) => {
+		if(positionSecs < 4){
+			return previous();
+		} else {
+			return setPosition(0);
+		}
+	});
+}
+
+function togglePlayPause(){
+	return status().then((status) => {
+		return execute('tell application "Spotify" to playpause');
+	});
+}
+
+function getPosition(){
+	return execute('tell application "Spotify" to player position').then((positionSecs) => {
+		var position = moment.duration(positionSecs, 'seconds').format("h:mm:ss", { forceLength: true  });
+		if(position.length < 3){
+			position = `00:${position}`;
+		}
+
+		return position;
+	});
+}
+
+function setPosition(newPosition){
+	var durationTemplate = '00:00:00'.split("");
+	// replace template characters starting from the last position
+	// with the user given duration in reverse order
+	newPosition.toString().split("").reverse().forEach((character, index) => {
+		durationTemplate[durationTemplate.length - (index + 1)]  = character;
+	});
+	var newPositionDuration = moment.duration(durationTemplate.join("")).asSeconds();
+	return execute('tell application "Spotify" to set player position to newPositionDuration', {newPositionDuration});
+}
+
+function quit(){
+	return execute('tell application "Spotify" to quit');
+}
+
+function start(){
+	return execute('tell application "Spotify" to activate');
 }
 
 module.exports = {
@@ -72,8 +117,12 @@ module.exports = {
 	unmute,
 	setVolume,
 	getVolume,
-	//replay,
-	//position,
+	replay,
+	togglePlayPause,
+	getPosition,
+	setPosition,
+	quit,
+	start,
 	//share,
 	//shuffle,
 	//repeat

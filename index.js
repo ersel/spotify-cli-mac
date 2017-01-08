@@ -83,13 +83,14 @@ program
 		})
 	})
 
-
 program
-	.command('play')
-	.action(() => {
-		spotifyClient.play().then((result) => {
-			console.log(result);
-		})
+	.command('play [uri]')
+	.action((uri) => {
+		if(uri){
+			spotifyClient.play(uri);
+		} else {
+			spotifyClient.play();
+		}
 	})
 
 
@@ -158,5 +159,42 @@ program
 			console.log(result);
 		})
 	})
+
+program
+	.command('p')
+	.action(() => {
+		spotifyClient.togglePlayPause();
+	});
+
+program
+	.command('replay')
+	.action(() => {
+		spotifyClient.replay();
+	})
+
+program
+	.command('position [newPosition]')
+	.action((newPosition) => {
+		if(newPosition){
+			spotifyClient.setPosition(newPosition);
+		} else {
+			spotifyClient.getPosition().then((position) => {
+				console.log(position);
+			})
+		}
+	});
+
+program
+	.command('quit')
+	.action(() =>{
+		spotifyClient.quit();
+	});
+
+program
+	.command('start')
+	.action(() =>{
+		spotifyClient.start();
+	});
+
 
 program.parse(process.argv);
