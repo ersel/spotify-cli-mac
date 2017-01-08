@@ -7,6 +7,18 @@ const moment = require('moment');
 // custom moment plugin for formatting track duractions
 require("moment-duration-format");
 
+// coz js...
+function _copyToClipboard(data) {
+	var proc = require('child_process').spawn('pbcopy');
+	proc.stdin.write(data);
+	proc.stdin.end();
+}
+
+function _generateURLfromURI(uri){
+	var uriComponent = uri.split(':').slice(-1)[0];
+	return `http://open.spotify.com/track/${uriComponent}`;
+}
+
 function play(uri){
 	if(uri){
 		return execute('tell application "Spotify" to play track uri', {uri});
@@ -107,6 +119,38 @@ function start(){
 	return execute('tell application "Spotify" to activate');
 }
 
+function shuffle(){
+	return execute('tell application "Spotify" to set shuffling to not shuffling').then(() => {
+		return execute('tell application "Spotify" to repeating');
+	});
+}
+
+function repeat(){
+	return execute('tell application "Spotify" to set repeating to not repeating').then(() => {
+		return execute('tell application "Spotify" to repeating');
+	});
+}
+
+function share(type){
+	return execute('tell application "Spotify" to spotify url of current track').then((uri) => {
+		if(type == 'uri'){
+			_copyToClipboard(uri);
+			console.log(`${uri} copied to clipboard.`);
+			return uri;
+		} else if(type == 'url'){
+			var url = _generateURLfromURI(uri);
+			_copyToClipboard(url);
+			console.log(`${url} copied to clipboard.`);
+			return url;
+		} else {
+			var url = _generateURLfromURI(uri);
+			console.log(`SpotifyURI: ${uri}`);
+			console.log(`Spotify URL: ${url}`);
+			return { uri, url };
+		}
+	})
+}
+
 module.exports = {
 	play,
 	status,
@@ -123,7 +167,7 @@ module.exports = {
 	setPosition,
 	quit,
 	start,
-	//share,
-	//shuffle,
-	//repeat
+	share,
+	shuffle,
+	repeat
 }

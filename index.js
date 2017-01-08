@@ -196,5 +196,26 @@ program
 		spotifyClient.start();
 	});
 
+program
+	.command('shuffle')
+	.action(() => {
+		spotifyClient.shuffle().then((status) => {
+			console.log(status);
+		});
+	})
+
+program
+	.command('repeat')
+	.action(() => {
+		spotifyClient.repeat().then((status) => {
+			console.log(status);
+		});
+	})
+
+program
+	.command('share [type]')
+	.action((type) => {
+		spotifyClient.share(type);
+	})
 
 program.parse(process.argv);
