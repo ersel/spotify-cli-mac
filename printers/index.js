@@ -108,11 +108,57 @@ function printPrevious(result){
 	printPlayerStatus(result);
 }
 
+function printVolume(volume){
+	new ProgressBar(`Volume: [:bar] ${chalk.green(volume)}`, {
+		complete: '=',
+		incomplete: ' ',
+		width: 50,
+		total: 100,
+	}).tick(volume);
+	console.log()
+}
+
+function printMute(volume){
+	var mute = `:no_bell:  Spotify muted.`;
+	console.log(emoji.emojify(mute));
+	printVolume(volume);
+}
+
+function printUnmute(volume){
+	var unmute = `:bell:  Spotify unmuted.`;
+	console.log(emoji.emojify(unmute));
+	printVolume(volume);
+}
+
+function printSetVolume(volume){
+	var setVolume = `:headphones:  Volume set to ${volume}`;
+	console.log(emoji.emojify(setVolume));
+	printVolume(volume);
+}
+
+function printVolumeIncrease(change, volume){
+	var increaseVolume = `:speaker:  Volume increased by ${change}`;
+	console.log(emoji.emojify(increaseVolume));
+	printVolume(volume);
+}
+
+function printVolumeDecrease(change, volume){
+	var decreaseVolume = `:speaker:  Volume decreased by ${~change}`;
+	console.log(emoji.emojify(decreaseVolume));
+	printVolume(volume);
+}
+
 module.exports = {
 	printSearchResults,
 	printPlayerStatus,
 	printNext,
-	printPrevious
+	printPrevious,
+	printVolume,
+	printMute,
+	printUnmute,
+	printSetVolume,
+	printVolumeIncrease,
+	printVolumeDecrease
 }
 
 

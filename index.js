@@ -157,7 +157,9 @@ program
 	.description('Mute player')
 	.action(() => {
 		spotifyClient.mute().then((result) => {
-			console.log(result);
+			spotifyClient.getVolume().then((result) => {
+				printer.printMute(result);
+			});
 		})
 	})
 
@@ -167,18 +169,30 @@ program
 	.description('Unmute player')
 	.action(() => {
 		spotifyClient.unmute().then((result) => {
-			console.log(result);
+			spotifyClient.getVolume().then((result) => {
+				printer.printUnmute(result);
+			});
 		})
 	})
 
 program
-	.command('volume')
+	.command('volume [newVolume]')
 	.alias('v')
 	.description('Display player volume')
-	.action(() => {
-		spotifyClient.getVolume().then((result) => {
-			console.log(result);
-		})
+	.action((newVolume) => {
+		if(newVolume){
+			spotifyClient.setVolume(newVolume).then((result) => {
+				spotifyClient.getVolume().then((result) => {
+					printer.printSetVolume(result);
+				});
+			})
+		} else {
+			spotifyClient.getVolume().then((result) => {
+				spotifyClient.getVolume().then((result) => {
+					printer.printVolume(result);
+				});
+			})
+		}
 	})
 
 program
@@ -186,8 +200,10 @@ program
 	.description('Turn the volume up by given amount (0-100), default:10')
 	.action((deltaVolume) => {
 		var changeInVolume = deltaVolume ? deltaVolume : 10;
-		spotifyClient.setVolume(changeInVolume).then((result) => {
-			console.log(result);
+		spotifyClient.changeVolume(changeInVolume).then((result) => {
+			spotifyClient.getVolume().then((result) => {
+				printer.printVolumeIncrease(changeInVolume, result);
+			});
 		})
 	})
 
@@ -196,8 +212,10 @@ program
 	.description('Turn the volume down by given amount (0-100), default:10')
 	.action((deltaVolume) => {
 		var changeInVolume = deltaVolume ? -deltaVolume : -10;
-		spotifyClient.setVolume(changeInVolume).then((result) => {
-			console.log(result);
+		spotifyClient.changeVolume(changeInVolume).then((result) => {
+			spotifyClient.getVolume().then((result) => {
+				printer.printVolumeDecrease(changeInVolume, result);
+			});
 		})
 	})
 

@@ -64,13 +64,19 @@ function unmute(){
 	return execute('tell application "Spotify" to set sound volume to 100');
 }
 
-function setVolume(deltaVolume){
+function changeVolume(deltaVolume){
 	return getVolume().then((currentVolume) => {
 		var newVolume = currentVolume + deltaVolume;
 		if(newVolume > 100) newVolume = 100;
 		if(newVolume < 0) newVolume = 0;
 		return execute('tell application "Spotify" to set sound volume to newVolume', {newVolume});
 	});
+}
+
+function setVolume(newVolume){
+	if(newVolume > 100) newVolume = 100;
+	if(newVolume < 0) newVolume = 0;
+	return execute('tell application "Spotify" to set sound volume to newVolume', {newVolume});
 }
 
 function getVolume(){
@@ -163,6 +169,7 @@ module.exports = {
 	previous,
 	mute,
 	unmute,
+	changeVolume,
 	setVolume,
 	getVolume,
 	replay,
