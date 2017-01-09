@@ -6,7 +6,7 @@ const spotify = require('spotify-web-api-node');
 const _ = require('lodash');
 const prompt = require('prompt');
 const parseSearchResults = require('./parsers/');
-const printSearchResults = require('./printers/');
+const printer = require('./printers/');
 const spotifyClient = require('./osascripts/');
 
 // need client access token for genius
@@ -60,7 +60,6 @@ program
 	.action((type, query) => {
 		// search for tracks by default
 		var searchFn = SearchOptions['track'].fn;
-		console.log(type, query)
 		var searchQry = `${type} ${query.join(' ')}`;
 		var resultType = SearchOptions['track'].type;
 
@@ -72,13 +71,15 @@ program
 
 		searchFn(searchQry).then((data) => {
 			var results = parseSearchResults(resultType, data);
-			printSearchResults(resultType, results);
+			printer.printSearchResults(resultType, results);
 			prompt.start();
 			prompt.get(['selection'], function (err, result) {
 				if(results[result.selection-1]){
 					var selectedSpotifyURI = results[result.selection-1].spotifyURI;
 					spotifyClient.play(selectedSpotifyURI).then((result) => {
-						console.log(result);
+						spotifyClient.status().then((result) => {
+							printer.printPlayerStatus(result);
+						});
 					});
 				}
 			});
@@ -91,8 +92,8 @@ program
 	.description('Display information about the current track along with player status')
 	.action(() => {
 		spotifyClient.status().then((result) => {
-			console.log(result);
-		})
+			printer.printPlayerStatus(result);
+		});
 	})
 
 program
@@ -100,9 +101,17 @@ program
 	.description('Continue playing current track or play the track with the provided URI')
 	.action((uri) => {
 		if(uri){
-			spotifyClient.play(uri);
+			spotifyClient.play(uri).then(() => {
+				spotifyClient.status().then((result) => {
+					printer.printPlayerStatus(result);
+				});
+			});
 		} else {
-			spotifyClient.play();
+			spotifyClient.play().then(() => {
+				spotifyClient.status().then((result) => {
+					printer.printPlayerStatus(result);
+				});
+			})
 		}
 	})
 
@@ -112,7 +121,9 @@ program
 	.description('Pause the current track')
 	.action(() => {
 		spotifyClient.pause().then((result) => {
-			console.log(result);
+			spotifyClient.status().then((result) => {
+				printer.printPlayerStatus(result);
+			});
 		})
 	})
 
@@ -122,7 +133,9 @@ program
 	.description('Play the next track in the queue')
 	.action(() => {
 		spotifyClient.next().then((result) => {
-			console.log(result);
+			spotifyClient.status().then((result) => {
+				printer.printNext(result);
+			});
 		})
 	})
 
@@ -132,7 +145,9 @@ program
 	.description('Play the previous track')
 	.action(() => {
 		spotifyClient.previous().then((result) => {
-			console.log(result);
+			spotifyClient.status().then((result) => {
+				printer.printPrevious(result);
+			});
 		})
 	})
 
@@ -190,7 +205,11 @@ program
 	.command('p')
 	.description('Toggle play/pause')
 	.action(() => {
-		spotifyClient.togglePlayPause();
+		spotifyClient.togglePlayPause().then(() => {
+			spotifyClient.status().then((result) => {
+				printer.printPlayerStatus(result);
+			});
+		});
 	});
 
 program
@@ -272,7 +291,12 @@ program
 				return;
 			}
 			lyricist.song({search: `${trackInfo.artist} ${trackInfo.track}`}, function (err, song) {
-				console.log(song.lyrics);
+				if(err){
+					console.log(`Could not find lyrics for track: ${trackInfo.track} - ${trackInfo.artist}`);
+				} else {
+					console.log(`${trackInfo.track} - ${trackInfo.artist} Lyrics`)
+					console.log(song.lyrics);
+				}
 			});
 		})
 	})

@@ -1,6 +1,8 @@
 'use strict';
 
 const chalk = require('chalk');
+const emoji = require('node-emoji');
+const ProgressBar = require('progress');
 
 const SearchResultPrinters = {
 	'albums': albumPrinterFn,
@@ -69,5 +71,48 @@ function printSearchResults(resultType, data){
 	}
 }
 
-module.exports = printSearchResults;
+function printDurationProgress(result){
+	var statusButton = result.status == 'playing' ? ':arrow_forward:' : ':double_vertical_bar:'
+	statusButton = emoji.emojify(statusButton);
+	new ProgressBar(`${statusButton}  ${result.status} [:bar] ${result.position} of ${result.duration}`, {
+		complete: '=',
+		incomplete: ' ',
+		width: 50,
+		total: result.durationSecs,
+	}).tick(result.positionSecs);
+	console.log()
+}
+
+function printPlayerStatus(result){
+	var artist = `:microphone:  ${chalk.green('Artist:')} ${chalk.green(result.artist)}`;
+	var track = `:musical_score:  ${chalk.green('Track:')} ${chalk.green(result.track)}`;
+	var album = `:cd:  ${chalk.green('Album:')} ${chalk.green(result.album)}`;
+	console.log(emoji.emojify(artist))
+	console.log(emoji.emojify(track))
+	console.log(emoji.emojify(album))
+	console.log()
+	printDurationProgress(result);
+}
+
+function printNext(result){
+	var nextTrack = `:fast_forward:  Playing next track: ${chalk.green(result.track)} :musical_score:`
+	console.log(emoji.emojify(nextTrack))
+	console.log()
+	printPlayerStatus(result);
+}
+
+function printPrevious(result){
+	var previousTrack = `:rewind:  Playing previous track: ${chalk.green(result.track)} :musical_score:`
+	console.log(emoji.emojify(previousTrack))
+	console.log()
+	printPlayerStatus(result);
+}
+
+module.exports = {
+	printSearchResults,
+	printPlayerStatus,
+	printNext,
+	printPrevious
+}
+
 

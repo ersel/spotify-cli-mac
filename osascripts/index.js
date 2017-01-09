@@ -33,9 +33,13 @@ function status(){
 		artist: execute('tell application "Spotify" to artist of current track as string'),
 		album: execute('tell application "Spotify" to album of current track as string'),
 		track: execute('tell application "Spotify" to name of current track as string'),
+		durationSecs: execute('tell application "Spotify" to duration of current track').then((durationMs) => {
+			return moment.duration(durationMs, 'milliseconds').asSeconds();
+		}),
 		duration: execute('tell application "Spotify" to duration of current track').then((durationMs) => {
 			return moment.duration(durationMs, 'milliseconds').format();
 		}),
+		positionSecs: execute('tell application "Spotify" to player position'),
 		position: getPosition()
 	});
 }
