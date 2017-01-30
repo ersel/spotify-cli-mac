@@ -8,7 +8,8 @@ const parseSearchResults = require('./parsers/');
 const printer = require('./printers/');
 const spotifyClient = require('./osascripts/');
 const nconf = require('nconf');
-nconf.file('./config.json');
+const path = require('path');
+nconf.file(path.join(__dirname, '/config.json'));
 
 // need client access token for genius
 let lyricist = require('lyricist');
