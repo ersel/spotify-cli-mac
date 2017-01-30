@@ -1,7 +1,11 @@
 # :notes: Spotify Client for Mac OS X :notes:
 A nodejs app to control Spotify without leaving your terminal.
 
+# Installation
+    npm install spotify-cli-mac -g
+Client will be available under the alias `spotify`
 # Usage
+    spotify
   Commands:
 
     search|s <type> [query...]  Search for a <track (t) | artist (ar) | album (al) | playlist (p) > (searches tracks by default)
