@@ -34,3 +34,4 @@ Client will be available under the alias `spotify`
     -h, --help     output usage information
     -V, --version  output the version number
 
+Contributions and feedback are welcome and encouraged!
