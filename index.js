@@ -1,18 +1,21 @@
 'use strict';
 
 const program = require('commander');
-const osascript = require('node-osascript');
 const spotify = require('spotify-web-api-node');
-const _ = require('lodash');
 const prompt = require('prompt');
 const parseSearchResults = require('./parsers/');
 const printer = require('./printers/');
 const spotifyClient = require('./osascripts/');
+const nconf = require('nconf');
+nconf.file('./config.json');
 
 // need client access token for genius
 let lyricist = require('lyricist');
-if(process.env['GeniusClientAccessToken']){
-	lyricist = lyricist(process.env['GeniusClientAccessToken']);
+
+let GENIUS_API_KEY = nconf.get('GeniusAPIClientKey');
+let GENIUS_API_KEY_SET = GENIUS_API_KEY !== 'YOUR_CLIENT_ACCESS_TOKEN_HERE';
+if(GENIUS_API_KEY_SET){
+	lyricist = lyricist(GENIUS_API_KEY);
 }
 
 const spotifyApi = new spotify();
@@ -76,7 +79,7 @@ program
 			prompt.get(['selection'], function (err, result) {
 				if(results[result.selection-1]){
 					var selectedSpotifyURI = results[result.selection-1].spotifyURI;
-					spotifyClient.play(selectedSpotifyURI).then((result) => {
+					spotifyClient.play(selectedSpotifyURI).then(() => {
 						spotifyClient.status().then((result) => {
 							printer.printPlayerStatus(result);
 						});
@@ -94,7 +97,7 @@ program
 		spotifyClient.status().then((result) => {
 			printer.printPlayerStatus(result);
 		});
-	})
+	});
 
 program
 	.command('play [uri]')
@@ -106,74 +109,75 @@ program
 					printer.printPlayerStatus(result);
 				});
 			});
-		} else {
+		}
+		else {
 			spotifyClient.play().then(() => {
 				spotifyClient.status().then((result) => {
 					printer.printPlayerStatus(result);
 				});
-			})
+			});
 		}
-	})
+	});
 
 
 program
 	.command('pause')
 	.description('Pause the current track')
 	.action(() => {
-		spotifyClient.pause().then((result) => {
+		spotifyClient.pause().then(() => {
 			spotifyClient.status().then((result) => {
 				printer.printPlayerStatus(result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('next')
 	.alias('n')
 	.description('Play the next track in the queue')
 	.action(() => {
-		spotifyClient.next().then((result) => {
+		spotifyClient.next().then(() => {
 			spotifyClient.status().then((result) => {
 				printer.printNext(result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('back')
 	.alias('b')
 	.description('Play the previous track')
 	.action(() => {
-		spotifyClient.previous().then((result) => {
+		spotifyClient.previous().then(() => {
 			spotifyClient.status().then((result) => {
 				printer.printPrevious(result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('mute')
 	.alias('m')
 	.description('Mute player')
 	.action(() => {
-		spotifyClient.mute().then((result) => {
+		spotifyClient.mute().then(() => {
 			spotifyClient.getVolume().then((result) => {
 				printer.printMute(result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('unmute')
 	.alias('u')
 	.description('Unmute player')
 	.action(() => {
-		spotifyClient.unmute().then((result) => {
+		spotifyClient.unmute().then(() => {
 			spotifyClient.getVolume().then((result) => {
 				printer.printUnmute(result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('volume [newVolume]')
@@ -181,43 +185,44 @@ program
 	.description('Display player volume')
 	.action((newVolume) => {
 		if(newVolume){
-			spotifyClient.setVolume(newVolume).then((result) => {
+			spotifyClient.setVolume(newVolume).then(() => {
 				spotifyClient.getVolume().then((result) => {
 					printer.printSetVolume(result);
 				});
-			})
-		} else {
-			spotifyClient.getVolume().then((result) => {
+			});
+		}
+		else {
+			spotifyClient.getVolume().then(() => {
 				spotifyClient.getVolume().then((result) => {
 					printer.printVolume(result);
 				});
-			})
+			});
 		}
-	})
+	});
 
 program
 	.command('+ [deltaVolume]')
 	.description('Turn the volume up by given amount (0-100), default:10')
 	.action((deltaVolume) => {
 		var changeInVolume = deltaVolume ? deltaVolume : 10;
-		spotifyClient.changeVolume(changeInVolume).then((result) => {
+		spotifyClient.changeVolume(changeInVolume).then(() => {
 			spotifyClient.getVolume().then((result) => {
 				printer.printVolumeIncrease(changeInVolume, result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('- [deltaVolume]')
 	.description('Turn the volume down by given amount (0-100), default:10')
 	.action((deltaVolume) => {
 		var changeInVolume = deltaVolume ? -deltaVolume : -10;
-		spotifyClient.changeVolume(changeInVolume).then((result) => {
+		spotifyClient.changeVolume(changeInVolume).then(() => {
 			spotifyClient.getVolume().then((result) => {
 				printer.printVolumeDecrease(changeInVolume, result);
 			});
-		})
-	})
+		});
+	});
 
 program
 	.command('p')
@@ -235,8 +240,12 @@ program
 	.alias('r')
 	.description('Replay current track')
 	.action(() => {
-		spotifyClient.replay();
-	})
+		spotifyClient.replay().then(() => {
+			spotifyClient.status().then((result) => {
+				printer.printPlayerStatus(result);
+			});
+		});
+	});
 
 program
 	.command('position [newPosition]')
@@ -244,11 +253,18 @@ program
 	.description('Get or set player position [mm:ss], e.g: pos 1:23')
 	.action((newPosition) => {
 		if(newPosition){
-			spotifyClient.setPosition(newPosition);
-		} else {
-			spotifyClient.getPosition().then((position) => {
-				console.log(position);
-			})
+			spotifyClient.setPosition(newPosition).then(() => {
+				spotifyClient.status().then((result) => {
+					printer.printPlayerStatus(result);
+				});
+			});
+		}
+		else {
+			spotifyClient.getPosition().then(() => {
+				spotifyClient.status().then((result) => {
+					printer.printPlayerStatus(result);
+				});
+			});
 		}
 	});
 
@@ -274,9 +290,9 @@ program
 	.description('Toggle shuffle on/off')
 	.action(() => {
 		spotifyClient.shuffle().then((status) => {
-			console.log(status);
+			printer.printToggleShuffle(status);
 		});
-	})
+	});
 
 program
 	.command('repeat')
@@ -284,9 +300,9 @@ program
 	.description('Toggle repeat on/off')
 	.action(() => {
 		spotifyClient.repeat().then((status) => {
-			console.log(status);
+			printer.printToggleRepeat(status);
 		});
-	})
+	});
 
 program
 	.command('share [type]')
@@ -294,29 +310,30 @@ program
 	.description('Display share <uri|url> and copy value to clipboard')
 	.action((type) => {
 		spotifyClient.share(type);
-	})
+	});
 
 program
 	.command('lyrics')
 	.alias('ly')
 	.description('Display the lyrics of currently playing track')
-	.action((type) => {
+	.action(() => {
 		spotifyClient.status().then((trackInfo) => {
-			if(!process.env['GeniusClientAccessToken']){
+			if(!GENIUS_API_KEY_SET){
 				console.log('You need to set the Client Access Token for Genius API.');
 				console.log('Sign up for API access here: https://genius.com/api-clients');
-				console.log('add key to your environment variables: export GeniusClientAccessToken=YourClientAccessTokenHere')
+				console.log('Update config.json file with your credentials');
 				return;
 			}
 			lyricist.song({search: `${trackInfo.artist} ${trackInfo.track}`}, function (err, song) {
 				if(err){
 					console.log(`Could not find lyrics for track: ${trackInfo.track} - ${trackInfo.artist}`);
-				} else {
-					console.log(`${trackInfo.track} - ${trackInfo.artist} Lyrics`)
+				}
+				else {
+					console.log(`${trackInfo.track} - ${trackInfo.artist} Lyrics`);
 					console.log(song.lyrics);
 				}
 			});
-		})
-	})
+		});
+	});
 
 program.parse(process.argv);

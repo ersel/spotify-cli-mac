@@ -1,0 +1,26 @@
+{
+	"parserOptions": {
+		"ecmaVersion": 6
+	},
+	"env": {
+		"commonjs": true,
+		"es6": true,
+		"node": true,
+		"mocha": true
+	},
+	"extends": "eslint:recommended",
+	"rules": {
+		"brace-style": [2, "stroustrup"],
+		"comma-dangle": 2,
+		"eqeqeq": ["error", "smart"],
+		"indent": ["error", "tab"],
+		"quotes": ["error", "single", { "allowTemplateLiterals": true }],
+		"linebreak-style": ["error", "unix"],
+		"no-redeclare": 0,
+		"no-unreachable": 2,
+		"no-mixed-spaces-and-tabs": 0,
+		"no-unused-vars": 2,
+		"no-console": 0,
+		"semi": ["error", "always"]
+	}
+}

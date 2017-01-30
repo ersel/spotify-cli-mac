@@ -8,8 +8,8 @@ const SearchResultPrinters = {
 	'albums': albumPrinterFn,
 	'artists': artistPrinterFn,
 	'playlists': playlistPrinterFn,
-	'tracks': trackPrinterFn,
-}
+	'tracks': trackPrinterFn
+};
 
 function albumPrinterFn(data){
 	data.forEach((result) => {
@@ -31,8 +31,8 @@ function artistPrinterFn(data){
 			chalk.green(result.name)  +
 			chalk.blue(' Followers: ') +
 			chalk.green(result.followers)
-		)
-	})
+		);
+	});
 }
 
 function playlistPrinterFn(data){
@@ -43,13 +43,11 @@ function playlistPrinterFn(data){
 			chalk.green(result.name)  +
 			chalk.blue(' Tracks: ') +
 			chalk.green(result.noOfTracks)
-		)
-	})
+		);
+	});
 }
 
 function trackPrinterFn(data){
-	// TODO: some tabbing would make it better
-	// but this will do for now
 	data.forEach((result) => {
 		console.log(
 			chalk.green(result.resultIndex + ': ') +
@@ -66,45 +64,46 @@ function trackPrinterFn(data){
 function printSearchResults(resultType, data){
 	if(SearchResultPrinters[resultType]){
 		return SearchResultPrinters[resultType](data);
-	} else {
-		throw new Error(`${resultType} can not be printed.`)
+	}
+	else {
+		throw new Error(`${resultType} can not be printed.`);
 	}
 }
 
 function printDurationProgress(result){
-	var statusButton = result.status == 'playing' ? ':arrow_forward:' : ':double_vertical_bar:'
+	var statusButton = result.status === 'playing' ? ':arrow_forward:' : ':double_vertical_bar:';
 	statusButton = emoji.emojify(statusButton);
 	new ProgressBar(`${statusButton}  ${result.status} [:bar] ${result.position} of ${result.duration}`, {
 		complete: '=',
 		incomplete: ' ',
 		width: 50,
-		total: result.durationSecs,
+		total: result.durationSecs
 	}).tick(result.positionSecs);
-	console.log()
+	console.log();
 }
 
 function printPlayerStatus(result){
 	var artist = `:microphone:  ${chalk.green('Artist:')} ${chalk.green(result.artist)}`;
 	var track = `:musical_score:  ${chalk.green('Track:')} ${chalk.green(result.track)}`;
 	var album = `:cd:  ${chalk.green('Album:')} ${chalk.green(result.album)}`;
-	console.log(emoji.emojify(artist))
-	console.log(emoji.emojify(track))
-	console.log(emoji.emojify(album))
-	console.log()
+	console.log(emoji.emojify(artist));
+	console.log(emoji.emojify(track));
+	console.log(emoji.emojify(album));
+	console.log();
 	printDurationProgress(result);
 }
 
 function printNext(result){
-	var nextTrack = `:fast_forward:  Playing next track: ${chalk.green(result.track)} :musical_score:`
-	console.log(emoji.emojify(nextTrack))
-	console.log()
+	var nextTrack = `:fast_forward:  Playing next track: ${chalk.green(result.track)} :musical_score:`;
+	console.log(emoji.emojify(nextTrack));
+	console.log();
 	printPlayerStatus(result);
 }
 
 function printPrevious(result){
-	var previousTrack = `:rewind:  Playing previous track: ${chalk.green(result.track)} :musical_score:`
-	console.log(emoji.emojify(previousTrack))
-	console.log()
+	var previousTrack = `:rewind:  Playing previous track: ${chalk.green(result.track)} :musical_score:`;
+	console.log(emoji.emojify(previousTrack));
+	console.log();
 	printPlayerStatus(result);
 }
 
@@ -113,9 +112,9 @@ function printVolume(volume){
 		complete: '=',
 		incomplete: ' ',
 		width: 50,
-		total: 100,
+		total: 100
 	}).tick(volume);
-	console.log()
+	console.log();
 }
 
 function printMute(volume){
@@ -148,6 +147,18 @@ function printVolumeDecrease(change, volume){
 	printVolume(volume);
 }
 
+function printToggleShuffle(status){
+	var description = status ? `${chalk.green('turned ON.')}` : `${chalk.red('turned OFF.')}`;
+	var toggleShuffle = `:twisted_rightwards_arrows:  Shuffle ${description}`;
+	console.log(emoji.emojify(toggleShuffle));
+}
+
+function printToggleRepeat(status){
+	var description = status ? `${chalk.green('turned ON.')}` : `${chalk.red('turned OFF.')}`;
+	var toggleRepeat = `:repeat:  Repeat ${description}`;
+	console.log(emoji.emojify(toggleRepeat));
+}
+
 module.exports = {
 	printSearchResults,
 	printPlayerStatus,
@@ -158,7 +169,9 @@ module.exports = {
 	printUnmute,
 	printSetVolume,
 	printVolumeIncrease,
-	printVolumeDecrease
-}
+	printVolumeDecrease,
+	printToggleShuffle,
+	printToggleRepeat
+};
 
 

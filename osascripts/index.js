@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 const execute = Promise.promisify(osascript.execute);
 const moment = require('moment');
 // custom moment plugin for formatting track duractions
-require("moment-duration-format");
+require('moment-duration-format');
 
 // coz js...
 function _copyToClipboard(data) {
@@ -22,7 +22,8 @@ function _generateURLfromURI(uri){
 function play(uri){
 	if(uri){
 		return execute('tell application "Spotify" to play track uri', {uri});
-	} else {
+	}
+	else {
 		return execute('tell application "Spotify" to play');
 	}
 }
@@ -87,21 +88,22 @@ function replay(){
 	return execute('tell application "Spotify" to player position').then((positionSecs) => {
 		if(positionSecs < 4){
 			return previous();
-		} else {
+		}
+		else {
 			return setPosition(0);
 		}
 	});
 }
 
 function togglePlayPause(){
-	return status().then((status) => {
+	return status().then(() => {
 		return execute('tell application "Spotify" to playpause');
 	});
 }
 
 function getPosition(){
 	return execute('tell application "Spotify" to player position').then((positionSecs) => {
-		var position = moment.duration(positionSecs, 'seconds').format("h:mm:ss", { forceLength: true  });
+		var position = moment.duration(positionSecs, 'seconds').format('h:mm:ss', { forceLength: true  });
 		if(position.length < 3){
 			position = `00:${position}`;
 		}
@@ -111,13 +113,13 @@ function getPosition(){
 }
 
 function setPosition(newPosition){
-	var durationTemplate = '00:00:00'.split("");
+	var durationTemplate = '00:00:00'.split('');
 	// replace template characters starting from the last position
 	// with the user given duration in reverse order
-	newPosition.toString().split("").reverse().forEach((character, index) => {
+	newPosition.toString().split('').reverse().forEach((character, index) => {
 		durationTemplate[durationTemplate.length - (index + 1)]  = character;
 	});
-	var newPositionDuration = moment.duration(durationTemplate.join("")).asSeconds();
+	var newPositionDuration = moment.duration(durationTemplate.join('')).asSeconds();
 	return execute('tell application "Spotify" to set player position to newPositionDuration', {newPositionDuration});
 }
 
@@ -131,7 +133,7 @@ function start(){
 
 function shuffle(){
 	return execute('tell application "Spotify" to set shuffling to not shuffling').then(() => {
-		return execute('tell application "Spotify" to repeating');
+		return execute('tell application "Spotify" to shuffling');
 	});
 }
 
@@ -143,22 +145,24 @@ function repeat(){
 
 function share(type){
 	return execute('tell application "Spotify" to spotify url of current track').then((uri) => {
-		if(type == 'uri'){
+		if(type === 'uri'){
 			_copyToClipboard(uri);
 			console.log(`${uri} copied to clipboard.`);
 			return uri;
-		} else if(type == 'url'){
+		}
+		else if(type === 'url'){
 			var url = _generateURLfromURI(uri);
 			_copyToClipboard(url);
 			console.log(`${url} copied to clipboard.`);
 			return url;
-		} else {
+		}
+		else {
 			var url = _generateURLfromURI(uri);
 			console.log(`SpotifyURI: ${uri}`);
 			console.log(`Spotify URL: ${url}`);
 			return { uri, url };
 		}
-	})
+	});
 }
 
 module.exports = {
@@ -181,4 +185,4 @@ module.exports = {
 	share,
 	shuffle,
 	repeat
-}
+};
