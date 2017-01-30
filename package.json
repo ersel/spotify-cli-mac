@@ -1,13 +1,13 @@
 {
   "name": "spotify-cli-mac",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A nodejs app to control Spotify without leaving your terminal on Mac OS X.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin":{
-	  "spotify": "./index.js"
+  "bin": {
+    "spotify": "./index.js"
   },
   "repository": {
     "type": "git",
