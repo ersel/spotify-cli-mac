@@ -7,6 +7,7 @@ Client will be available under the alias `spotify`
 
 # Demo
 ![demo image](http://i.giphy.com/l3q2vUslrmITQBuq4.gif "demo image")
+
 # Usage
     spotify
   Commands:
