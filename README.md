@@ -1,9 +1,12 @@
 # :notes: Spotify Client for Mac OS X :notes:
-A nodejs app to control Spotify without leaving your terminal.
+A nodejs app to control Spotify without leaving your terminal. Only works with Mac Os as it relies on AppleScript behind the scenes to communicate with the Spotify app.
 
 # Installation
     npm install spotify-cli-mac -g
 Client will be available under the alias `spotify`
+
+# Demo
+![demo image](http://i.giphy.com/l3q2vUslrmITQBuq4.gif "demo image")
 # Usage
     spotify
   Commands:
@@ -34,4 +37,11 @@ Client will be available under the alias `spotify`
     -h, --help     output usage information
     -V, --version  output the version number
 
-Contributions and feedback are welcome and encouraged!
+# Displaying Lyrics
+In order to be able to use the `lyrics` command, you will need to get a `Client Access Token` for the `Genius API`.
+Sign up for API access here: https://genius.com/api-clients
+
+Once you have your client access token, edit the `config.json` found under `/usr/local/lib/node_modules/spotify-cli-mac/`
+
+
+*Contributions and feedback are welcome and encouraged!*
