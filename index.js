@@ -79,6 +79,9 @@ program
 			printer.printSearchResults(resultType, results);
 			prompt.start();
 			prompt.get(['selection'], function (err, result) {
+				if (err) {
+					return process.stdout.write('\n');
+				}
 				if(results[result.selection-1]){
 					var selectedSpotifyURI = results[result.selection-1].spotifyURI;
 					spotifyClient.play(selectedSpotifyURI).then(() => {
