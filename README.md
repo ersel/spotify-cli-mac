@@ -5,6 +5,11 @@ A nodejs app to control Spotify without leaving your terminal. Only works with M
     npm install spotify-cli-mac -g
 Client will be available under the alias `spotify`
 
+# Set-up
+In order to use the client, you'll need to set Spotify Credentials. You can do this by going to `https://developer.spotify.com/my-applications` and then creating a new application.
+
+Once you have created a new Spotify Application, edit the `config.json` file located at `/usr/local/lib/node_modules/spotify-cli-mac/` with your Client ID and Secret.
+
 # Demo
 ![demo image](http://i.giphy.com/l3q2vUslrmITQBuq4.gif "demo image")
 
