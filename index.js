@@ -20,7 +20,23 @@ if(GENIUS_API_KEY_SET){
 	lyricist = lyricist(GENIUS_API_KEY);
 }
 
-const spotifyApi = new spotify();
+let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
+let SPOTIFY_CLIENT_ID_SET = SPOTIFY_CLIENT_ID !== 'YOUR_SPOTIFY_CLIENT_ID_HERE';
+let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
+let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE';
+
+let spotifyApi = null;
+if(SPOTIFY_CLIENT_ID_SET && SPOTIFY_CLIENT_SECRET_SET) {
+	spotifyApi = new spotify({
+		clientId : SPOTIFY_CLIENT_ID,
+		clientSecret : SPOTIFY_CLIENT_SECRET
+	});
+
+}
+else {
+	console.log('Spotify API Credentials should be set, see documentation on how to set them.');
+	process.exit(1);
+}
 
 const SearchOptions = {
 	'track': {
@@ -74,24 +90,31 @@ program
 			resultType = SearchOptions[type].type;
 		}
 
-		searchFn(searchQry).then((data) => {
-			var results = parseSearchResults(resultType, data);
-			printer.printSearchResults(resultType, results);
-			prompt.start();
-			prompt.get(['selection'], function (err, result) {
-				if (err) {
-					return process.stdout.write('\n');
-				}
-				if(results[result.selection-1]){
-					var selectedSpotifyURI = results[result.selection-1].spotifyURI;
-					spotifyClient.play(selectedSpotifyURI).then(() => {
-						spotifyClient.status().then((result) => {
-							printer.printPlayerStatus(result);
-						});
+		// Retrieve an access token.
+		spotifyApi.clientCredentialsGrant()
+			.then(function(data) {
+				spotifyApi.setAccessToken(data.body['access_token']);
+				searchFn(searchQry).then((data) => {
+					var results = parseSearchResults(resultType, data);
+					printer.printSearchResults(resultType, results);
+					prompt.start();
+					prompt.get(['selection'], function (err, result) {
+						if (err) {
+							return process.stdout.write('\n');
+						}
+						if(results[result.selection-1]){
+							var selectedSpotifyURI = results[result.selection-1].spotifyURI;
+							spotifyClient.play(selectedSpotifyURI).then(() => {
+								spotifyClient.status().then((result) => {
+									printer.printPlayerStatus(result);
+								});
+							});
+						}
 					});
-				}
+				});
+			}, function(err) {
+				console.log('Something went wrong when retrieving an access token', err);
 			});
-		});
 	});
 
 program
