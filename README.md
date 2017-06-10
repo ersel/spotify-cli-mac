@@ -11,7 +11,7 @@ In order to use the client, you'll need to set Spotify Credentials. You can do t
 Once you have created a new Spotify Application, edit the `config.json` file located at `/usr/local/lib/node_modules/spotify-cli-mac/` with your Client ID and Secret.
 
 # Demo
-![demo image](http://i.giphy.com/l3q2vUslrmITQBuq4.gif "demo image")
+[![asciicast](https://asciinema.org/a/ejbbvaa8833wq4xn4d2xuc9jx.png)](https://asciinema.org/a/ejbbvaa8833wq4xn4d2xuc9jx)
 
 # Usage
     spotify
