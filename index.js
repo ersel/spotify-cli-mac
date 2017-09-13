@@ -77,8 +77,8 @@ let spotifyApi = null;
 		return;
 	}
 	else {
-		var clientID = readlineSync.question('What is your Spotify Client ID? \n');
-		var clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
+		let clientID = readlineSync.question('What is your Spotify Client ID? \n');
+		let clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
 		nconf.set('spotifyClientID', clientID);
 		nconf.set('spotifyClientSecret', clientSecret);
 		nconf.save(function (err) {
@@ -356,6 +356,20 @@ program
 		spotifyClient.share(type);
 	});
 
+program
+	.command('token')
+	.alias('tk')
+	.description('Change Client tokens')
+	.action(() => {
+		let clientID = readlineSync.question('What is your Spotify Client ID? \n');
+		let clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
+		nconf.set('spotifyClientID', clientID);
+		nconf.set('spotifyClientSecret', clientSecret);
+		nconf.save(function (err) {
+			fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
+			});
+		});
+	})
 program
 	.command('lyrics')
 	.alias('ly')
