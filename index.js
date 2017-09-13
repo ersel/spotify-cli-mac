@@ -72,7 +72,6 @@ const SearchOptions = {
 		'type': 'playlists'
 	}
 };
-
 program
 	.version('0.0.1')
 	.command('search <type> [query...]')
@@ -339,6 +338,17 @@ program
 	.action((type) => {
 		spotifyClient.share(type);
 	});
+
+
+ program
+ 	.command('setToken [token] [secret]')
+	.alias('st')
+	.description('Set your spotify token')
+	.action((token, secret) => {
+		console.log(token);
+		console.log(secret);
+	})
+
 
 program
 	.command('lyrics')
