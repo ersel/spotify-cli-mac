@@ -10,16 +10,16 @@ const printer = require('./printers/');
 const spotifyClient = require('./osascripts/');
 const nconf = require('nconf');
 const path = require('path');
-const readline = require('readline');
+const readlineSync = require('readline-sync');
 nconf.file(path.join(__dirname, '/config.json'));
 
 // need client access token for genius
 let lyricist = require('lyricist');
 
-let rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+// let rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout
+// });
 
 let GENIUS_API_KEY = nconf.get('GeniusAPIClientKey');
 let GENIUS_API_KEY_SET = GENIUS_API_KEY !== 'YOUR_CLIENT_ACCESS_TOKEN_HERE';
@@ -77,19 +77,14 @@ let spotifyApi = null;
 		return;
 	}
 	else {
-		rl.question("What is your Client ID? \n", function(ID) {
-			rl.question("What is your Client Secret? \n", function(secret) {
-				nconf.set('spotifyClientID', ID);
-				nconf.set('spotifyClientSecret', secret);
-				nconf.save(function (err) {
-			    fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
-			    });
-			  });
-				rl.close();
-				process.exit(1);
+		var clientID = readlineSync.question('What is your Spotify Client ID? \n');
+		var clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
+		nconf.set('spotifyClientID', clientID);
+		nconf.set('spotifyClientSecret', clientSecret);
+		nconf.save(function (err) {
+			fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
 			});
 		});
-
 	}
 
 
