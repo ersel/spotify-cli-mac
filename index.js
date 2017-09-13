@@ -2,6 +2,7 @@
 'use strict';
 
 const program = require('commander');
+const fs = require('fs');
 const spotify = require('spotify-web-api-node');
 const prompt = require('prompt');
 const parseSearchResults = require('./parsers/');
@@ -9,10 +10,16 @@ const printer = require('./printers/');
 const spotifyClient = require('./osascripts/');
 const nconf = require('nconf');
 const path = require('path');
+const readline = require('readline');
 nconf.file(path.join(__dirname, '/config.json'));
 
 // need client access token for genius
 let lyricist = require('lyricist');
+
+let rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 let GENIUS_API_KEY = nconf.get('GeniusAPIClientKey');
 let GENIUS_API_KEY_SET = GENIUS_API_KEY !== 'YOUR_CLIENT_ACCESS_TOKEN_HERE';
@@ -26,54 +33,69 @@ let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
 let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE';
 
 let spotifyApi = null;
-if(SPOTIFY_CLIENT_ID_SET && SPOTIFY_CLIENT_SECRET_SET) {
-	spotifyApi = new spotify({
-		clientId : SPOTIFY_CLIENT_ID,
-		clientSecret : SPOTIFY_CLIENT_SECRET
-	});
 
-}
-else {
-	console.log('Spotify API Credentials should be set, see documentation on how to set them.');
-	process.exit(1);
-}
+	if(SPOTIFY_CLIENT_ID_SET && SPOTIFY_CLIENT_SECRET_SET) {
+		spotifyApi = new spotify({
+			clientId : SPOTIFY_CLIENT_ID,
+			clientSecret : SPOTIFY_CLIENT_SECRET
+		});
 
-const SearchOptions = {
-	'track': {
-		'fn': spotifyApi.searchTracks.bind(spotifyApi),
-		'type': 'tracks'
-	},
-	't': {
-		'fn': spotifyApi.searchTracks.bind(spotifyApi),
-		'type': 'tracks'
-	},
-	'artist': {
-		'fn': spotifyApi.searchArtists.bind(spotifyApi),
-		'type': 'artists'
-	},
-	'ar': {
-		'fn': spotifyApi.searchArtists.bind(spotifyApi),
-		'type': 'artists'
-	},
-	'album': {
-		'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-		'type': 'albums'
-	},
-	'al': {
-		'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-		'type': 'albums'
-	},
-	'playlist': {
-		'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-		'type': 'playlists'
-	},
-	'p': {
-		'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-		'type': 'playlists'
+		const SearchOptions = {
+			'track': {
+				'fn': spotifyApi.searchTracks.bind(spotifyApi),
+				'type': 'tracks'
+			},
+			't': {
+				'fn': spotifyApi.searchTracks.bind(spotifyApi),
+				'type': 'tracks'
+			},
+			'artist': {
+				'fn': spotifyApi.searchArtists.bind(spotifyApi),
+				'type': 'artists'
+			},
+			'ar': {
+				'fn': spotifyApi.searchArtists.bind(spotifyApi),
+				'type': 'artists'
+			},
+			'album': {
+				'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+				'type': 'albums'
+			},
+			'al': {
+				'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+				'type': 'albums'
+			},
+			'playlist': {
+				'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+				'type': 'playlists'
+			},
+			'p': {
+				'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+				'type': 'playlists'
+			}
+		};
+		return;
 	}
-};
+	else {
+		rl.question("What is your Client ID? \n", function(ID) {
+			rl.question("What is your Client Secret? \n", function(secret) {
+				nconf.set('spotifyClientID', ID);
+				nconf.set('spotifyClientSecret', secret);
+				nconf.save(function (err) {
+			    fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
+			    });
+			  });
+				rl.close();
+				process.exit(1);
+			});
+		});
+
+	}
+
+
+
 program
-	.version('0.0.1')
+	.version('0.0.2')
 	.command('search <type> [query...]')
 	.description('Search for a <track (t) | artist (ar) | album (al) | playlist (p) > (searches tracks by default)')
 	.alias('s')
@@ -338,17 +360,6 @@ program
 	.action((type) => {
 		spotifyClient.share(type);
 	});
-
-
- program
- 	.command('setToken [token] [secret]')
-	.alias('st')
-	.description('Set your spotify token')
-	.action((token, secret) => {
-		console.log(token);
-		console.log(secret);
-	})
-
 
 program
 	.command('lyrics')
