@@ -74,7 +74,6 @@ let spotifyApi = null;
 				'type': 'playlists'
 			}
 		};
-		return;
 	}
 	else {
 		let clientID = readlineSync.question('What is your Spotify Client ID? \n');
@@ -243,7 +242,6 @@ program
 			});
 		}
 	});
-
 program
 	.command('+ [deltaVolume]')
 	.description('Turn the volume up by given amount (0-100), default:10')
