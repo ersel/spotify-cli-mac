@@ -31,7 +31,6 @@ let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
 let SPOTIFY_CLIENT_ID_SET = SPOTIFY_CLIENT_ID !== 'YOUR_SPOTIFY_CLIENT_ID_HERE';
 let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
 let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE';
-
 let spotifyApi = null;
 
 	if(SPOTIFY_CLIENT_ID_SET && SPOTIFY_CLIENT_SECRET_SET) {
@@ -39,53 +38,55 @@ let spotifyApi = null;
 			clientId : SPOTIFY_CLIENT_ID,
 			clientSecret : SPOTIFY_CLIENT_SECRET
 		});
-
-		const SearchOptions = {
-			'track': {
-				'fn': spotifyApi.searchTracks.bind(spotifyApi),
-				'type': 'tracks'
-			},
-			't': {
-				'fn': spotifyApi.searchTracks.bind(spotifyApi),
-				'type': 'tracks'
-			},
-			'artist': {
-				'fn': spotifyApi.searchArtists.bind(spotifyApi),
-				'type': 'artists'
-			},
-			'ar': {
-				'fn': spotifyApi.searchArtists.bind(spotifyApi),
-				'type': 'artists'
-			},
-			'album': {
-				'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-				'type': 'albums'
-			},
-			'al': {
-				'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-				'type': 'albums'
-			},
-			'playlist': {
-				'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-				'type': 'playlists'
-			},
-			'p': {
-				'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-				'type': 'playlists'
-			}
-		};
 	}
 	else {
-		let clientID = readlineSync.question('What is your Spotify Client ID? \n');
+		let clientId = readlineSync.question('What is your Spotify Client ID? \n');
 		let clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
-		nconf.set('spotifyClientID', clientID);
+		nconf.set('spotifyClientID', clientId);
 		nconf.set('spotifyClientSecret', clientSecret);
 		nconf.save(function (err) {
 			fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
+			}, () => {
+				printConfig();
+				process.exit(1);
 			});
 		});
-	}
 
+	}
+	const SearchOptions = {
+		'track': {
+			'fn': spotifyApi.searchTracks.bind(spotifyApi),
+			'type': 'tracks'
+		},
+		't': {
+			'fn': spotifyApi.searchTracks.bind(spotifyApi),
+			'type': 'tracks'
+		},
+		'artist': {
+			'fn': spotifyApi.searchArtists.bind(spotifyApi),
+			'type': 'artists'
+		},
+		'ar': {
+			'fn': spotifyApi.searchArtists.bind(spotifyApi),
+			'type': 'artists'
+		},
+		'album': {
+			'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+			'type': 'albums'
+		},
+		'al': {
+			'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+			'type': 'albums'
+		},
+		'playlist': {
+			'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+			'type': 'playlists'
+		},
+		'p': {
+			'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+			'type': 'playlists'
+		}
+	};
 
 
 program
@@ -258,7 +259,7 @@ program
 	.command('- [deltaVolume]')
 	.description('Turn the volume down by given amount (0-100), default:10')
 	.action((deltaVolume) => {
-		var changeInVolume = deltaVolume ? -deltaVolume : -10;
+		var changeInVolume = deltaVolume ? -deltaVolume : -11 ;
 		spotifyClient.changeVolume(changeInVolume).then(() => {
 			spotifyClient.getVolume().then((result) => {
 				printer.printVolumeDecrease(changeInVolume, result);

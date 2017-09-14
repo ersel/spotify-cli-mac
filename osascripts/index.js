@@ -50,7 +50,7 @@ function pause(){
 }
 
 function next(){
-	return execute('tell application "Spotify" to next track');
+	return execute('tell application "Spotify" to next track\n tell application "Spotify" to pause');
 }
 
 function previous(){
