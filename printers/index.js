@@ -159,6 +159,12 @@ function printToggleRepeat(status){
 	console.log(emoji.emojify(toggleRepeat));
 }
 
+function printConfig(){
+	console.log(
+		chalk.green('Config set!')
+	);
+}
+
 module.exports = {
 	printSearchResults,
 	printPlayerStatus,
@@ -171,7 +177,6 @@ module.exports = {
 	printVolumeIncrease,
 	printVolumeDecrease,
 	printToggleShuffle,
-	printToggleRepeat
+	printToggleRepeat,
+	printConfig
 };
-
-
