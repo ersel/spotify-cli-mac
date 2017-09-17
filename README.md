@@ -8,7 +8,7 @@ Client will be available under the alias `spotify`
 # Set-up
 In order to use the client, you'll need to set Spotify Credentials. You can do this by going to https://developer.spotify.com/my-applications and then creating a new application.
 
-Once you have created a new Spotify Application, edit the `config.json` file located at `/usr/local/lib/node_modules/spotify-cli-mac/` with your Client ID and Secret.
+Once you have created a new Spotify Application, just run the Spotify CLI with `spotify token` command to set your tokens.
 
 # Demo
 [![asciicast](https://asciinema.org/a/ejbbvaa8833wq4xn4d2xuc9jx.png)](https://asciinema.org/a/ejbbvaa8833wq4xn4d2xuc9jx)
@@ -36,6 +36,7 @@ Once you have created a new Spotify Application, edit the `config.json` file loc
     shuffle|ts                  Toggle shuffle on/off
     repeat|tr                   Toggle repeat on/off
     share|sh [type]             Display share <uri|url> and copy value to clipboard
+    token|tk                    Change Client Spotify tokens
     lyrics|ly                   Display the lyrics of currently playing track
 
   Options:
