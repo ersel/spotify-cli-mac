@@ -2,7 +2,6 @@
 'use strict';
 
 const program = require('commander');
-const fs = require('fs');
 const spotify = require('spotify-web-api-node');
 const prompt = require('prompt');
 const parseSearchResults = require('./parsers/');
@@ -16,11 +15,6 @@ nconf.file(path.join(__dirname, '/config.json'));
 // need client access token for genius
 let lyricist = require('lyricist');
 
-// let rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout
-// });
-
 let GENIUS_API_KEY = nconf.get('GeniusAPIClientKey');
 let GENIUS_API_KEY_SET = GENIUS_API_KEY !== 'YOUR_CLIENT_ACCESS_TOKEN_HERE';
 if(GENIUS_API_KEY_SET){
@@ -33,61 +27,66 @@ let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
 let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE';
 let spotifyApi = null;
 
-	if(SPOTIFY_CLIENT_ID_SET && SPOTIFY_CLIENT_SECRET_SET) {
-		spotifyApi = new spotify({
-			clientId : SPOTIFY_CLIENT_ID,
-			clientSecret : SPOTIFY_CLIENT_SECRET
-		});
-	}
-	else {
-		let clientId = readlineSync.question('What is your Spotify Client ID? \n');
-		let clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
-		nconf.set('spotifyClientID', clientId);
-		nconf.set('spotifyClientSecret', clientSecret);
-		nconf.save(function (err) {
-			fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
-			}, () => {
-				printConfig();
-				process.exit(1);
-			});
-		});
+const initSpotifyApi = (client_id, client_secret) => {
+	return new spotify({
+		clientId : client_id,
+		clientSecret : client_secret
+	});
+};
 
-	}
-	const SearchOptions = {
-		'track': {
-			'fn': spotifyApi.searchTracks.bind(spotifyApi),
-			'type': 'tracks'
-		},
-		't': {
-			'fn': spotifyApi.searchTracks.bind(spotifyApi),
-			'type': 'tracks'
-		},
-		'artist': {
-			'fn': spotifyApi.searchArtists.bind(spotifyApi),
-			'type': 'artists'
-		},
-		'ar': {
-			'fn': spotifyApi.searchArtists.bind(spotifyApi),
-			'type': 'artists'
-		},
-		'album': {
-			'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-			'type': 'albums'
-		},
-		'al': {
-			'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-			'type': 'albums'
-		},
-		'playlist': {
-			'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-			'type': 'playlists'
-		},
-		'p': {
-			'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-			'type': 'playlists'
-		}
-	};
+const setTokens = () => {
+	let clientId = readlineSync.question('What is your Spotify Client ID? \n', { hideEchoBack: true });
+	let clientSecret = readlineSync.question('What is your Spotify Client Secret? \n', { hideEchoBack: true });
+	nconf.set('spotifyClientID', clientId);
+	nconf.set('spotifyClientSecret', clientSecret);
+	nconf.save();
+	printer.printConfig();
+};
 
+if(SPOTIFY_CLIENT_ID_SET && SPOTIFY_CLIENT_SECRET_SET) {
+	spotifyApi = initSpotifyApi(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
+}
+else {
+	setTokens();
+	let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
+	let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
+	spotifyApi = initSpotifyApi(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
+}
+
+const SearchOptions = {
+	'track': {
+		'fn': spotifyApi.searchTracks.bind(spotifyApi),
+		'type': 'tracks'
+	},
+	't': {
+		'fn': spotifyApi.searchTracks.bind(spotifyApi),
+		'type': 'tracks'
+	},
+	'artist': {
+		'fn': spotifyApi.searchArtists.bind(spotifyApi),
+		'type': 'artists'
+	},
+	'ar': {
+		'fn': spotifyApi.searchArtists.bind(spotifyApi),
+		'type': 'artists'
+	},
+	'album': {
+		'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+		'type': 'albums'
+	},
+	'al': {
+		'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+		'type': 'albums'
+	},
+	'playlist': {
+		'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+		'type': 'playlists'
+	},
+	'p': {
+		'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+		'type': 'playlists'
+	}
+};
 
 program
 	.version('0.0.2')
@@ -259,7 +258,7 @@ program
 	.command('- [deltaVolume]')
 	.description('Turn the volume down by given amount (0-100), default:10')
 	.action((deltaVolume) => {
-		var changeInVolume = deltaVolume ? -deltaVolume : -11 ;
+		var changeInVolume = deltaVolume ? -deltaVolume : -10 ;
 		spotifyClient.changeVolume(changeInVolume).then(() => {
 			spotifyClient.getVolume().then((result) => {
 				printer.printVolumeDecrease(changeInVolume, result);
@@ -358,17 +357,10 @@ program
 program
 	.command('token')
 	.alias('tk')
-	.description('Change Client tokens')
+	.description('Change Client Spotify tokens')
 	.action(() => {
-		let clientID = readlineSync.question('What is your Spotify Client ID? \n');
-		let clientSecret = readlineSync.question('What is your Spotify Client Secret? \n')
-		nconf.set('spotifyClientID', clientID);
-		nconf.set('spotifyClientSecret', clientSecret);
-		nconf.save(function (err) {
-			fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
-			});
-		});
-	})
+		setTokens();
+	});
 program
 	.command('lyrics')
 	.alias('ly')
