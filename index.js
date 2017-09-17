@@ -10,15 +10,16 @@ const spotifyClient = require('./osascripts/');
 const nconf = require('nconf');
 const path = require('path');
 const readlineSync = require('readline-sync');
+const fetchLyrics = require('./fetch_lyrics').fetchLyrics;
 nconf.file(path.join(__dirname, '/config.json'));
 
 // need client access token for genius
-let lyricist = require('lyricist');
+let lyricist = require('lyricist/node6');
 
 let GENIUS_API_KEY = nconf.get('GeniusAPIClientKey');
 let GENIUS_API_KEY_SET = GENIUS_API_KEY !== 'YOUR_CLIENT_ACCESS_TOKEN_HERE';
 if(GENIUS_API_KEY_SET){
-	lyricist = lyricist(GENIUS_API_KEY);
+	lyricist = new lyricist(GENIUS_API_KEY);
 }
 
 let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
@@ -373,15 +374,7 @@ program
 				console.log('Update config.json file with your credentials');
 				return;
 			}
-			lyricist.song({search: `${trackInfo.artist} ${trackInfo.track}`}, function (err, song) {
-				if(err){
-					console.log(`Could not find lyrics for track: ${trackInfo.track} - ${trackInfo.artist}`);
-				}
-				else {
-					console.log(`${trackInfo.track} - ${trackInfo.artist} Lyrics`);
-					console.log(song.lyrics);
-				}
-			});
+			fetchLyrics(lyricist, trackInfo.artist, trackInfo.track);
 		});
 	});
 

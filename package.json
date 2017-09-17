@@ -30,7 +30,7 @@
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "lodash": "^4.17.4",
-    "lyricist": "https://github.com/ersel/lyricist.git",
+    "lyricist": "^2.2.2",
     "moment": "^2.17.1",
     "moment-duration-format": "^1.3.0",
     "nconf": "^0.8.4",
