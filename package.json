@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "spotify": "./index.js"
+    "spotify": "./index.js",
+    "sp": "./index.js"
   },
   "repository": {
     "type": "git",
