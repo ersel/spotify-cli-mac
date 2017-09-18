@@ -15,7 +15,7 @@ nconf.file(path.join(__dirname, '/config.json'));
 
 // need client access token for genius
 let lyricist = require('lyricist');
-
+let SearchOptions;
 // let rl = readline.createInterface({
 //   input: process.stdin,
 //   output: process.stdout
@@ -38,6 +38,40 @@ let spotifyApi = null;
 			clientId : SPOTIFY_CLIENT_ID,
 			clientSecret : SPOTIFY_CLIENT_SECRET
 		});
+		SearchOptions = {
+			'track': {
+				'fn': spotifyApi.searchTracks.bind(spotifyApi),
+				'type': 'tracks'
+			},
+			't': {
+				'fn': spotifyApi.searchTracks.bind(spotifyApi),
+				'type': 'tracks'
+			},
+			'artist': {
+				'fn': spotifyApi.searchArtists.bind(spotifyApi),
+				'type': 'artists'
+			},
+			'ar': {
+				'fn': spotifyApi.searchArtists.bind(spotifyApi),
+				'type': 'artists'
+			},
+			'album': {
+				'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+				'type': 'albums'
+			},
+			'al': {
+				'fn': spotifyApi.searchAlbums.bind(spotifyApi),
+				'type': 'albums'
+			},
+			'playlist': {
+				'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+				'type': 'playlists'
+			},
+			'p': {
+				'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
+				'type': 'playlists'
+			}
+		};
 	}
 	else {
 		let clientId = readlineSync.question('What is your Spotify Client ID? \n');
@@ -47,46 +81,13 @@ let spotifyApi = null;
 		nconf.save(function (err) {
 			fs.readFile(path.join(__dirname, '/config.json'), function (err, data) {
 			}, () => {
-				printConfig();
+				printer.printConfig();
 				process.exit(1);
 			});
 		});
 
 	}
-	const SearchOptions = {
-		'track': {
-			'fn': spotifyApi.searchTracks.bind(spotifyApi),
-			'type': 'tracks'
-		},
-		't': {
-			'fn': spotifyApi.searchTracks.bind(spotifyApi),
-			'type': 'tracks'
-		},
-		'artist': {
-			'fn': spotifyApi.searchArtists.bind(spotifyApi),
-			'type': 'artists'
-		},
-		'ar': {
-			'fn': spotifyApi.searchArtists.bind(spotifyApi),
-			'type': 'artists'
-		},
-		'album': {
-			'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-			'type': 'albums'
-		},
-		'al': {
-			'fn': spotifyApi.searchAlbums.bind(spotifyApi),
-			'type': 'albums'
-		},
-		'playlist': {
-			'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-			'type': 'playlists'
-		},
-		'p': {
-			'fn': spotifyApi.searchPlaylists.bind(spotifyApi),
-			'type': 'playlists'
-		}
-	};
+
 
 
 program
