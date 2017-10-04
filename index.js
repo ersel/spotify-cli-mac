@@ -362,6 +362,7 @@ program
 	.action(() => {
 		setTokens();
 	});
+
 program
 	.command('lyrics')
 	.alias('ly')
@@ -377,5 +378,39 @@ program
 			fetchLyrics(lyricist, trackInfo.artist, trackInfo.track);
 		});
 	});
+
+program
+		.command('recommend')
+		.alias('rec')
+		.description('Recommend other songs based on the song currently playing.')
+		.action(() => {
+			spotifyApi.clientCredentialsGrant()
+				.then(function(data) {
+					spotifyApi.setAccessToken(data.body['access_token']);
+					spotifyClient.getCurrentSongId().then((data) => {
+						spotifyApi.getRecommendations({ seed_tracks: [data] }).then((response) => {
+							// Assuming Spotify won't start recommending albums, artists, or playlists
+							var results = parseSearchResults('tracks', response);
+							printer.printSearchResults('tracks', results);
+							prompt.start();
+							prompt.get(['selection'], function (err, result) {
+								if (err) {
+									return process.stdout.write('\n');
+								}
+								if(results[result.selection-1]){
+									var selectedSpotifyURI = results[result.selection-1].spotifyURI;
+									spotifyClient.play(selectedSpotifyURI).then(() => {
+										spotifyClient.status().then((result) => {
+											printer.printPlayerStatus(result);
+										});
+									});
+								}
+							});
+						});
+					});
+				}, function(err) {
+					console.log('Something went wrong when retrieving an access token', err);
+				});
+		});
 
 program.parse(process.argv);

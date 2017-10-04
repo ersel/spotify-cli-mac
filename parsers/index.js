@@ -60,7 +60,16 @@ function playlistParserFn(resultType, data){
 }
 
 function trackParserFn(resultType, data){
-	return data.body[resultType].items.map((resultEntry, index) => {
+	// Added to reuse this function for recommendations as well
+	var tracks = [];
+	if (data.body[resultType].items) {
+		tracks = data.body[resultType].items;
+	}
+	else {
+		tracks = data.body[resultType];
+	}
+
+	return tracks.map((resultEntry, index) => {
 		var resultIndex = index + 1;
 		var trackName = resultEntry.name;
 		var albumName = resultEntry.album.name;
@@ -87,6 +96,5 @@ function parseSearchResults(resultType, data){
 		throw new Error(`${resultType} can not be parsed.`);
 	}
 }
-
 
 module.exports = parseSearchResults;

@@ -165,6 +165,13 @@ function share(type){
 	});
 }
 
+function getCurrentSongId() {
+	return execute('tell application "Spotify" to ID of current track as string').then((data) => {
+		// Removes the added characters from the front of the ID returned from the AppleScript
+		return data.match(/(.*):(.*)/)[2];
+	});
+}
+
 module.exports = {
 	play,
 	status,
@@ -184,5 +191,6 @@ module.exports = {
 	start,
 	share,
 	shuffle,
-	repeat
+	repeat,
+	getCurrentSongId
 };
