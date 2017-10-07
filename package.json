@@ -39,6 +39,7 @@
     "progress": "^1.1.8",
     "prompt": "^1.0.0",
     "readline-sync": "^1.4.7",
+    "semver": "^5.4.1",
     "spotify-web-api-node": "^2.3.6"
   },
   "devDependencies": {

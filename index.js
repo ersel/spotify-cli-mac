@@ -11,6 +11,8 @@ const nconf = require('nconf');
 const path = require('path');
 const readlineSync = require('readline-sync');
 const fetchLyrics = require('./fetch_lyrics').fetchLyrics;
+const version = require('./package.json').version;
+const semver = require('semver');
 nconf.file(path.join(__dirname, '/config.json'));
 
 // need client access token for genius
@@ -90,7 +92,7 @@ const SearchOptions = {
 };
 
 program
-	.version('0.0.2')
+	.version(version)
 	.command('search <type> [query...]')
 	.description('Search for a <track (t) | artist (ar) | album (al) | playlist (p) > (searches tracks by default)')
 	.alias('s')
@@ -414,3 +416,15 @@ program
 		});
 
 program.parse(process.argv);
+
+/* CHECK Installed CLI version
+ * */
+let publishedVersion = require('child_process').execSync(`npm info spotify-cli-mac version`);
+publishedVersion = publishedVersion.toString().trim().replace(/^\n*/, '').replace(/\n*$/, '');
+if(semver.lt(version, semver.clean(publishedVersion))){
+	console.log(`Your Spotify CLI is outdated. Latest version is ${publishedVersion}, you're on ${version}`);
+	console.log(`Reinstall by doing:`);
+	console.log(`npm uninstall -g spotify-cli-mac`);
+	console.log(`npm install spotify-cli-mac -g\n`);
+}
+

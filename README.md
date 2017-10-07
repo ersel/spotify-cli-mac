@@ -18,6 +18,8 @@ Once you have created a new Spotify Application, just run the Spotify CLI with `
   Commands:
 
     search|s <type> [query...]  Search for a <track (t) | artist (ar) | album (al) | playlist (p) > (searches tracks by default)
+    recommend|rec               Recommend other songs based on the song currently playing.
+
     info|i                      Display information about the current track along with player status
     play [uri]                  Continue playing current track or play the track with the provided URI
     pause                       Pause the current track
