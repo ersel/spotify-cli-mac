@@ -1,5 +1,5 @@
 {
   "GeniusAPIClientKey": "YOUR_CLIENT_ACCESS_TOKEN_HERE",
-  "spotifyClientID": "exit",
-  "spotifyClientSecret": "edasd"
+  "spotifyClientID": "YOUR_SPOTIFY_CLIENT_ID_HERE",
+  "spotifyClientSecret": "YOUR_SPOTIFY_CLIENT_SECRET_HERE"
 }
