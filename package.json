@@ -4,7 +4,9 @@
   "description": "A nodejs app to control Spotify without leaving your terminal on Mac OS X.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/eslint/bin/eslint.js osascripts/ parsers/ printers/",
+    "precommit": "npm run lint"
   },
   "bin": {
     "spotify": "./index.js"
@@ -43,6 +45,7 @@
     "spotify-web-api-node": "^2.3.6"
   },
   "devDependencies": {
-    "eslint": "^3.14.1"
+    "eslint": "^3.14.1",
+    "husky": "^0.14.3"
   }
 }
