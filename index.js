@@ -165,7 +165,23 @@ program
 		}
 	});
 
-
+program
+	.command('playlist [username]')
+	.description('Get all playlist by user')
+	.action(username => {
+		if (username) {
+			spotifyApi.clientCredentialsGrant().then(function(data) {
+				spotifyApi.setAccessToken(data.body['access_token']);
+				spotifyApi.getUserPlaylists(username)
+					.then(function(data) {
+						var results = parseSearchResults('playlistsByUser', data);
+						printer.printSearchResults('playlists', results);
+					},function(err) {
+						console.log('Something went wrong!', err);
+					});
+			});
+		}
+	});
 program
 	.command('pause')
 	.description('Pause the current track')
