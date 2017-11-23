@@ -176,6 +176,20 @@ program
 					.then(function(data) {
 						var results = parseSearchResults('playlistsByUser', data);
 						printer.printSearchResults('playlists', results);
+						prompt.start();
+						prompt.get(['selection'], function (err, result) {
+							if (err) {
+								return process.stdout.write('\n');
+							}
+							if(results[result.selection-1]){
+								var selectedSpotifyURI = results[result.selection-1].uri;
+								spotifyClient.play(selectedSpotifyURI).then(() => {
+									spotifyClient.status().then((result) => {
+										printer.printPlayerStatus(result);
+									});
+								});
+							}
+						});
 					},function(err) {
 						console.log('Something went wrong!', err);
 					});
