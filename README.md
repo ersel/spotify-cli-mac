@@ -18,6 +18,7 @@ Once you have created a new Spotify Application, just run the Spotify CLI with `
   Commands:
 
     search|s <type> [query...]  Search for a <track (t) | artist (ar) | album (al) | playlist (p) > (searches tracks by default)
+    playlist|pl [username]      Get user's public playlists, by default use username in config.json
     recommend|rec               Recommend other songs based on the song currently playing.
 
     info|i                      Display information about the current track along with player status
@@ -39,6 +40,7 @@ Once you have created a new Spotify Application, just run the Spotify CLI with `
     repeat|tr                   Toggle repeat on/off
     share|sh [type]             Display share <uri|url> and copy value to clipboard
     token|tk                    Change Client Spotify tokens
+    user|me                     Set Spotify Username
     lyrics|ly                   Display the lyrics of currently playing track
 
   Options:
