@@ -54,6 +54,9 @@ else {
 	let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
 	let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
 	spotifyApi = initSpotifyApi(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
+	if (process.argv[2] === 'token') {
+		 process.exit(0);
+	}
 }
 
 const SearchOptions = {
