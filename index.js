@@ -25,11 +25,11 @@ if(GENIUS_API_KEY_SET){
 }
 
 let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
-let SPOTIFY_CLIENT_ID_SET = SPOTIFY_CLIENT_ID !== 'YOUR_SPOTIFY_CLIENT_ID_HERE'  || SPOTIFY_CLIENT_ID === '' ;
+let SPOTIFY_CLIENT_ID_SET = SPOTIFY_CLIENT_ID !== 'YOUR_SPOTIFY_CLIENT_ID_HERE' && SPOTIFY_CLIENT_ID !== '';
 let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
-let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE' || SPOTIFY_CLIENT_SECRET === '' ;
+let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE' && SPOTIFY_CLIENT_SECRET !== '';
 let SPOTIFY_USERNAME = nconf.get('spotifyUsername');
-let SPOTIFY_USERNAME_SET = SPOTIFY_USERNAME !== 'YOUR_USERNAME' || SPOTIFY_USERNAME === '' ;
+let SPOTIFY_USERNAME_SET = SPOTIFY_USERNAME !== 'YOUR_USERNAME' && SPOTIFY_USERNAME !== '' && SPOTIFY_USERNAME;
 let spotifyApi = null;
 
 const initSpotifyApi = (client_id, client_secret) => {
@@ -63,6 +63,7 @@ function setUsername(){
 	nconf.save();
 	printer.printConfig();
 }
+
 function getPlayListByUsername(username){
 	spotifyApi.clientCredentialsGrant().then(function(data) {
 		spotifyApi.setAccessToken(data.body['access_token']);
@@ -81,22 +82,24 @@ function getPlayListByUsername(username){
 							if (results[result.selection-1].noOfTracks > 0) {
 								var selectedSpotifyURI = results[result.selection-1].uri;
 								spotifyClient.play(selectedSpotifyURI).then(() => {
-									spotifyClient.status().then((result) => {
-										printer.printPlayerStatus(result);
-									});
+									setTimeout(function(){
+										spotifyClient.status().then((result) => {
+											printer.printPlayerStatus(result);
+										});
+									}, 300);
 								});
 							}
-							else{
+							else {
 								printer.error('This playlist has no songs, so it could not be played');
 							}
 						}
 					});
 				}
-				else{
+				else {
 					printer.error('It looks like the user has any public playlists');
 				}
 
-			},function(err) {
+			}, function(err) {
 				printer.error('Something went wrong!', err);
 			});
 	});
@@ -213,17 +216,19 @@ program
 
 program
 	.command('playlist [username]')
+	.alias('pl')
 	.description('Get all playlist by user')
 	.action(username => {
 		if (username) {
 			getPlayListByUsername(username);
 		}
-		else{
+		else {
 			if (SPOTIFY_USERNAME_SET) {
 				getPlayListByUsername(SPOTIFY_USERNAME);
 			}
-			else{
-				printer.warning('You will need to set your username first using spotify username [your spotify username]');
+			else {
+				printer.warning('You will need to set your username first using spotify username.');
+				printer.warning('Run `spotify user`');
 			}
 		}
 	});
@@ -426,8 +431,8 @@ program
 		setTokens();
 	});
 program
-	.command('username')
-	.alias('user')
+	.command('user')
+	.alias('me')
 	.description('Change Client Spotify Username')
 	.action(() => {
 		setUsername();

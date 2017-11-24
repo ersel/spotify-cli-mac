@@ -13,7 +13,7 @@ const SearchResultPrinters = {
 
 function warning(m){
 	console.log(
-		chalk.orange(m)
+		chalk.yellow(m)
 	);
 }
 
