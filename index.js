@@ -54,7 +54,7 @@ else {
 	let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
 	let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
 	spotifyApi = initSpotifyApi(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
-	if (process.argv[2] === 'token') {
+	if (process.argv[2] === 'token' || process.argv[2] === 'reset' ) {
 		 process.exit(0);
 	}
 }
@@ -367,7 +367,15 @@ program
 	.action(() => {
 		setTokens();
 	});
-
+program
+	.command('reset')
+	.description('reset config back to default settings')
+	.action(() => {
+		nconf.set('spotifyClientID', 'YOUR_SPOTIFY_CLIENT_ID_HERE');
+		nconf.set('spotifyClientSecret', 'YOUR_SPOTIFY_CLIENT_SECRET_HERE');
+		nconf.save();
+		printer.printConfig();
+	});
 program
 	.command('lyrics')
 	.alias('ly')
