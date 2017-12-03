@@ -13,23 +13,25 @@ const readlineSync = require('readline-sync');
 const fetchLyrics = require('./fetch_lyrics').fetchLyrics;
 const version = require('./package.json').version;
 const semver = require('semver');
-nconf.file(path.join(__dirname, '/config.json'));
+const os = require('os');
+const CONFIG_PATH = path.join(os.homedir(),'/.spotify-cli-config.json');
 
+nconf.env().file(CONFIG_PATH);
 // need client access token for genius
 let lyricist = require('lyricist/node6');
 
 let GENIUS_API_KEY = nconf.get('GeniusAPIClientKey');
-let GENIUS_API_KEY_SET = GENIUS_API_KEY !== 'YOUR_CLIENT_ACCESS_TOKEN_HERE';
+let GENIUS_API_KEY_SET = GENIUS_API_KEY !== '' && GENIUS_API_KEY;
 if(GENIUS_API_KEY_SET){
 	lyricist = new lyricist(GENIUS_API_KEY);
 }
 
 let SPOTIFY_CLIENT_ID = nconf.get('spotifyClientID');
-let SPOTIFY_CLIENT_ID_SET = SPOTIFY_CLIENT_ID !== 'YOUR_SPOTIFY_CLIENT_ID_HERE' && SPOTIFY_CLIENT_ID !== '';
+let SPOTIFY_CLIENT_ID_SET = SPOTIFY_CLIENT_ID !== '' && SPOTIFY_CLIENT_ID;
 let SPOTIFY_CLIENT_SECRET = nconf.get('spotifyClientSecret');
-let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== 'YOUR_SPOTIFY_CLIENT_SECRET_HERE' && SPOTIFY_CLIENT_SECRET !== '';
+let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== '' && SPOTIFY_CLIENT_SECRET;
 let SPOTIFY_USERNAME = nconf.get('spotifyUsername');
-let SPOTIFY_USERNAME_SET = SPOTIFY_USERNAME !== 'YOUR_USERNAME' && SPOTIFY_USERNAME !== '' && SPOTIFY_USERNAME;
+let SPOTIFY_USERNAME_SET = SPOTIFY_USERNAME !== '' && SPOTIFY_USERNAME;
 let spotifyApi = null;
 
 const initSpotifyApi = (client_id, client_secret) => {
