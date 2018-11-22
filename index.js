@@ -466,7 +466,7 @@ program
 			if(!GENIUS_API_KEY_SET){
 				console.log('You need to set the Client Access Token for Genius API.');
 				console.log('Sign up for API access here: https://genius.com/api-clients');
-				console.log('Update config.json file with your credentials');
+				console.log('Update ' + CONFIG_PATH + ' file with your credentials');
 				return;
 			}
 			fetchLyrics(lyricist, trackInfo.artist, trackInfo.track);
