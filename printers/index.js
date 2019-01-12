@@ -177,6 +177,12 @@ function printConfig(){
 	);
 }
 
+function printImage(image) {
+	console.log(
+		chalk.green(image)
+	);
+}
+
 module.exports = {
 	error,
 	warning,
@@ -192,5 +198,6 @@ module.exports = {
 	printVolumeDecrease,
 	printToggleShuffle,
 	printToggleRepeat,
-	printConfig
+	printConfig,
+	printImage
 };
