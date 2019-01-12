@@ -177,7 +177,7 @@ function printConfig(){
 	);
 }
 
-function printImage(image) {
+function printImageAsString(image) {
 	console.log(image);
 }
 
@@ -197,5 +197,5 @@ module.exports = {
 	printToggleShuffle,
 	printToggleRepeat,
 	printConfig,
-	printImage
+	printImageAsString
 };

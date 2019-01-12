@@ -172,7 +172,7 @@ function getCurrentSongId() {
 	});
 }
 
-function getSongArtwork() {
+function getSongArtworkUrl() {
 	return execute('tell application "Spotify" to artwork url of current track as string').then((data) => {
 		return data;
 	});
@@ -199,5 +199,5 @@ module.exports = {
 	shuffle,
 	repeat,
 	getCurrentSongId,
-	getSongArtwork
+	getSongArtworkUrl
 };
