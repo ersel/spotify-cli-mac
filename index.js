@@ -527,8 +527,8 @@ if(semver.lt(version, semver.clean(publishedVersion))){
 
 function getSongArtwork() {
 	spotifyClient.getSongArtwork().then((data) => {
-		image.draw(data, {left: 10, width: 50, char: '@'}, function (resp) {
-			printer.printImage(resp);
+		image.draw(data, {left: 10, width: 50, char: '@'}, function (response) {
+			printer.printImage(response);
 		});
 	});	
 }
