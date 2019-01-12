@@ -178,9 +178,7 @@ function printConfig(){
 }
 
 function printImage(image) {
-	console.log(
-		chalk.green(image)
-	);
+	console.log(image);
 }
 
 module.exports = {
