@@ -529,8 +529,15 @@ if(semver.lt(version, semver.clean(publishedVersion))){
 
 function getSongArtwork() {
 	spotifyClient.getSongArtworkUrl().then((data) => {
-		image.draw(data, {left: 10, width: 50, char: '@'}, function (response) {
-			printer.printImageAsString(response);
+		var leftOffset = 10;
+		var imageWidth = 50;
+		var charAsPixel ='●';
+		image.draw(data, {left: leftOffset, width: imageWidth, char: charAsPixel}, function (response, status) {
+			if (status == "success") {
+				printer.printImageAsString(response);
+			} else {
+				printer.error('Song artowerk could not be displayed' , status);
+			}
 		});
 	});	
 }
