@@ -538,7 +538,7 @@ function getSongArtwork() {
 				printer.printImageAsString(response);
 			} 
 			else {
-				printer.error('Song artowrk could not be displayed' , status);
+				printer.error('Song artwork could not be displayed' , status);
 			}
 		});
 	});	
