@@ -34,6 +34,7 @@ let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== '' && SPOTIFY_CLIENT_S
 let SPOTIFY_USERNAME = nconf.get('spotifyUsername');
 let SPOTIFY_USERNAME_SET = SPOTIFY_USERNAME !== '' && SPOTIFY_USERNAME;
 let spotifyApi = null;
+let SUCCESS = 'success';
 
 const initSpotifyApi = (client_id, client_secret) => {
 	return new spotify({
@@ -533,10 +534,11 @@ function getSongArtwork() {
 		var imageWidth = 50;
 		var charAsPixel ='●';
 		image.draw(data, {left: leftOffset, width: imageWidth, char: charAsPixel}, function (response, status) {
-			if (status == "success") {
+			if (status === SUCCESS) {
 				printer.printImageAsString(response);
-			} else {
-				printer.error('Song artowerk could not be displayed' , status);
+			} 
+			else {
+				printer.error('Song artowrk could not be displayed' , status);
 			}
 		});
 	});	
