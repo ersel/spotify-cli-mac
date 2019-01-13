@@ -275,6 +275,7 @@ program
 	.action(() => {
 		spotifyClient.previous().then(() => {
 			spotifyClient.status().then((result) => {
+				getSongArtwork();
 				printer.printPrevious(result);
 			});
 		});
@@ -526,9 +527,9 @@ if(semver.lt(version, semver.clean(publishedVersion))){
 
 
 function getSongArtwork() {
-	spotifyClient.getSongArtwork().then((data) => {
+	spotifyClient.getSongArtworkUrl().then((data) => {
 		image.draw(data, {left: 10, width: 50, char: '@'}, function (response) {
-			printer.printImage(response);
+			printer.printImageAsString(response);
 		});
 	});	
 }
