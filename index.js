@@ -182,6 +182,7 @@ program
 						if(results[result.selection-1]){
 							var selectedSpotifyURI = results[result.selection-1].spotifyURI;
 							spotifyClient.play(selectedSpotifyURI).then(() => {
+								getSongArtwork();
 								spotifyClient.status().then((result) => {
 									printer.printPlayerStatus(result);
 								});
