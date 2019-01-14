@@ -531,7 +531,7 @@ if(semver.lt(version, semver.clean(publishedVersion))){
 function getSongArtwork() {
 	spotifyClient.getSongArtworkUrl().then((data) => {
 		var leftOffset = 10;
-		var imageWidth = 50;
+		var imageWidth = 20;
 		var charAsPixel ='●';
 		image.draw(data, {left: leftOffset, width: imageWidth, char: charAsPixel}, function (response, status) {
 			if (status === SUCCESS) {
