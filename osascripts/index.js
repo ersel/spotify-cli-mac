@@ -172,6 +172,18 @@ function getCurrentSongId() {
 	});
 }
 
+function getSongArtworkUrl() {
+	return execute('tell application "Spotify" to artwork url of current track as string').then((data) => {
+		return data;
+	});
+}
+
+function getiTermVersion() {
+	return execute('get version of application "iTerm"').then((data) => {
+		return data;
+	});
+}
+
 module.exports = {
 	play,
 	status,
@@ -192,5 +204,7 @@ module.exports = {
 	share,
 	shuffle,
 	repeat,
-	getCurrentSongId
+	getCurrentSongId,
+	getSongArtworkUrl,
+	getiTermVersion
 };

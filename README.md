@@ -64,5 +64,7 @@ Example
 }
 ```
 
+# Displaying Album artwork
+Album artwork will also be displayed if you're using iTerm 2.9+.
 
 *Contributions and feedback are welcome and encouraged!*

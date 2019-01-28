@@ -14,6 +14,7 @@ const fetchLyrics = require('./fetch_lyrics').fetchLyrics;
 const version = require('./package.json').version;
 const semver = require('semver');
 const os = require('os');
+
 const CONFIG_PATH = path.join(os.homedir(),'/.spotify-cli-config.json');
 
 nconf.env().file(CONFIG_PATH);
