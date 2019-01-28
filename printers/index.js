@@ -3,6 +3,9 @@
 const chalk = require('chalk');
 const emoji = require('node-emoji');
 const ProgressBar = require('progress');
+const imgcat = require('imgcat');
+const semver = require('semver');
+const osascripts = require('../osascripts/index');
 
 const SearchResultPrinters = {
 	'albums': albumPrinterFn,
@@ -103,6 +106,7 @@ function printPlayerStatus(result){
 	console.log(emoji.emojify(album));
 	console.log();
 	printDurationProgress(result);
+	printArtwork();
 }
 
 function printNext(result){
@@ -177,8 +181,19 @@ function printConfig(){
 	);
 }
 
-function printImageAsString(image) {
-	console.log(image);
+function printArtwork() {
+	let terminal = require('child_process').execSync(`echo $TERM_PROGRAM`);
+	terminal = terminal.toString().trim().replace(/^\n*/, '').replace(/\n*$/, '');
+	if(terminal === 'iTerm.app') {
+		osascripts.getiTermVersion().then(version => {
+			if(semver.gt(version, '2.9.0')) {
+				osascripts.getSongArtworkUrl().then((artworkURL) => {
+					console.log();
+					imgcat(artworkURL, {log: true, height: 8});
+				});
+			}
+		});
+	}
 }
 
 module.exports = {
@@ -196,6 +211,5 @@ module.exports = {
 	printVolumeDecrease,
 	printToggleShuffle,
 	printToggleRepeat,
-	printConfig,
-	printImageAsString
+	printConfig
 };

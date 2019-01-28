@@ -178,6 +178,12 @@ function getSongArtworkUrl() {
 	});
 }
 
+function getiTermVersion() {
+	return execute('get version of application "iTerm"').then((data) => {
+		return data;
+	});
+}
+
 module.exports = {
 	play,
 	status,
@@ -199,5 +205,6 @@ module.exports = {
 	shuffle,
 	repeat,
 	getCurrentSongId,
-	getSongArtworkUrl
+	getSongArtworkUrl,
+	getiTermVersion
 };

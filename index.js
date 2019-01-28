@@ -13,8 +13,8 @@ const readlineSync = require('readline-sync');
 const fetchLyrics = require('./fetch_lyrics').fetchLyrics;
 const version = require('./package.json').version;
 const semver = require('semver');
-const image = require('imaging');
 const os = require('os');
+
 const CONFIG_PATH = path.join(os.homedir(),'/.spotify-cli-config.json');
 
 nconf.env().file(CONFIG_PATH);
@@ -34,7 +34,6 @@ let SPOTIFY_CLIENT_SECRET_SET = SPOTIFY_CLIENT_SECRET !== '' && SPOTIFY_CLIENT_S
 let SPOTIFY_USERNAME = nconf.get('spotifyUsername');
 let SPOTIFY_USERNAME_SET = SPOTIFY_USERNAME !== '' && SPOTIFY_USERNAME;
 let spotifyApi = null;
-let SUCCESS = 'success';
 
 const initSpotifyApi = (client_id, client_secret) => {
 	return new spotify({
@@ -183,7 +182,6 @@ program
 						if(results[result.selection-1]){
 							var selectedSpotifyURI = results[result.selection-1].spotifyURI;
 							spotifyClient.play(selectedSpotifyURI).then(() => {
-								getSongArtwork();
 								spotifyClient.status().then((result) => {
 									printer.printPlayerStatus(result);
 								});
@@ -213,7 +211,6 @@ program
 		if(uri){
 			spotifyClient.play(uri).then(() => {
 				spotifyClient.status().then((result) => {
-					getSongArtwork();
 					printer.printPlayerStatus(result);
 				});
 			});
@@ -221,7 +218,6 @@ program
 		else {
 			spotifyClient.play().then(() => {
 				spotifyClient.status().then((result) => {
-					getSongArtwork();	
 					printer.printPlayerStatus(result);
 				});
 			});
@@ -264,7 +260,6 @@ program
 	.action(() => {
 		spotifyClient.next().then(() => {
 			spotifyClient.status().then((result) => {
-				getSongArtwork();
 				printer.printNext(result);
 			});
 		});
@@ -277,7 +272,6 @@ program
 	.action(() => {
 		spotifyClient.previous().then(() => {
 			spotifyClient.status().then((result) => {
-				getSongArtwork();
 				printer.printPrevious(result);
 			});
 		});
@@ -525,21 +519,4 @@ if(semver.lt(version, semver.clean(publishedVersion))){
 	console.log(`Reinstall by doing:`);
 	console.log(`npm uninstall -g spotify-cli-mac`);
 	console.log(`npm install spotify-cli-mac -g\n`);
-}
-
-
-function getSongArtwork() {
-	spotifyClient.getSongArtworkUrl().then((data) => {
-		var leftOffset = 10;
-		var imageWidth = 20;
-		var charAsPixel ='●';
-		image.draw(data, {left: leftOffset, width: imageWidth, char: charAsPixel}, function (response, status) {
-			if (status === SUCCESS) {
-				printer.printImageAsString(response);
-			} 
-			else {
-				printer.error('Song artwork could not be displayed' , status);
-			}
-		});
-	});	
 }
