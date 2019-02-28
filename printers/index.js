@@ -186,8 +186,8 @@ function printArtwork() {
 	terminal = terminal.toString().trim().replace(/^\n*/, '').replace(/\n*$/, '');
 	if(terminal === 'iTerm.app') {
 		osascripts.getiTermVersion().then(version => {
-			if version.includes("beta"){
-				split = version.split("beta");
+			if (version.indexOf('beta') !== -1) {
+				let split = version.split('beta');
 				version = split[0];
 			}
 			if(semver.gt(version, '2.9.0')) {
