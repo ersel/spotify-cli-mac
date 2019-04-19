@@ -11,7 +11,7 @@ In order to use the client, you'll need to set Spotify Credentials. You can do t
 Once you have created a new Spotify Application, just run the Spotify CLI with `spotify token` command to set your tokens.
 
 # Demo
-[![asciicast](https://asciinema.org/a/ejbbvaa8833wq4xn4d2xuc9jx.png)](https://asciinema.org/a/ejbbvaa8833wq4xn4d2xuc9jx)
+[![asciicast](https://asciinema.org/a/APkHEAAV5OEMtwH50kiz0Kkwk.svg)](https://asciinema.org/a/APkHEAAV5OEMtwH50kiz0Kkwk)
 
 # Usage
     spotify
