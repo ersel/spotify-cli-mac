@@ -46,7 +46,7 @@
     "spotify-web-api-node": "^2.5.0"
   },
   "devDependencies": {
-    "eslint": "^3.14.1",
+    "eslint": "^4.18.2",
     "husky": "^0.14.3"
   }
 }
